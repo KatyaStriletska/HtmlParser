@@ -1,0 +1,12 @@
+WHITESPACE = _{ " " | "\t" | "\n"}
+
+html = {SOI ~ WHITESPACE* ~ declaration? ~ elem* ~ WHITESPACE* ~ EOI}
+declaration = {"<!DOCTYPE html>" ~ WHITESPACE*}
+
+elem = {start_tag ~ WHITESPACE* ~ elem*? ~WHITESPACE* ~ end_tag}
+start_tag = { "<" ~ tag_name ~ ">" }
+end_tag = { "</" ~ tag_name ~ ">" }
+tag_name = { ASCII_ALPHANUMERIC+ }
+// text = { }
+// COMMENT = ${ SingleLineComment }
+// SingleLineComment = { "//" ~ (!"\n" ~ ANY)* }
