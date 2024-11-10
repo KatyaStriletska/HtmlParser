@@ -9,13 +9,17 @@ pub struct Grammar;
 
 #[derive(Error, Debug)]
 pub enum HtmlParseError{
-    #[error("Invalid html")]
+    #[error("Invalid HTML structure detected!")]
     ErrorHtmlStructure, 
+    #[error("The tag is closed with a different tag than expected.")]
+    MismatchedClosingTag,
+    #[error("Unexpected html element detected!: {0}")]
+    UnexpectedHtmlElement(String), 
     #[error("unknown data store error")]
     Unknown,
 }
 #[derive(Debug)]
-enum HtmlElem
+pub enum HtmlElem
 {
     Tag {
         tag_name: String,
@@ -34,7 +38,7 @@ enum TagNameType
 
 
 
-pub fn parse_html(input: &str) -> Result<(), HtmlParseError>{
+pub fn parse_html(input: &str) -> Result<Vec<HtmlElem>, HtmlParseError>{
     let elements = Grammar::parse(Rule::html, input)
         .map_err(|_| HtmlParseError::ErrorHtmlStructure)?;
     
@@ -43,27 +47,27 @@ pub fn parse_html(input: &str) -> Result<(), HtmlParseError>{
         match pair.as_rule() {
             Rule::html => {
                 for tag in pair.into_inner() {
-                    if let Ok(elem) = parse_elem(&tag) {
-                        println!("{}", "res!!!!!!!!!!!:");
-                        println!("{:?}", elem);
-
+                    match tag.as_rule() {
+                        Rule::elem | Rule::self_closed_tag => {
+                            if let Ok(elem) = parse_elem(&tag) {
+                                println!("{}", "res!!!!!!!!!!!:");
+                                println!("{:?}", elem);
+                                htmlDom.push(elem);
+                            }
+                        }
+                        Rule::declaration => {
+                            let doctype = tag.as_str().to_string();
+                            htmlDom.push(HtmlElem::Documentation(doctype));
+                        }
+                        _ => {}
                     }
-                    else {
-                        println!("{}", "ERROR:");
-
-                    }
-
                 }
-            }
-            Rule::declaration => {
-                let name = pair.as_str().to_string();
-                htmlDom.push(HtmlElem::Documentation(name));
-            }
-      
-               _ => ()
+            }     
+            _ => return Err(HtmlParseError::ErrorHtmlStructure),
            }
        }
-    Ok(())
+       println!("{:?}", htmlDom);
+    Ok(htmlDom)
 }
 
 pub fn parse_elem(pair: &Pair<Rule>) -> Result<HtmlElem, HtmlParseError> {
@@ -105,6 +109,15 @@ pub fn parse_elem(pair: &Pair<Rule>) -> Result<HtmlElem, HtmlParseError> {
 
                     }
                     Rule::end_tag => {
+                        let end_tag_name = child.into_inner().next().unwrap().as_str();
+                        println!("{} {}'", tag_name, end_tag_name);
+                        
+                        if tag_name != end_tag_name {
+                            println!("Error: Mismatched tags detected! Expected '{}', found '{}'", tag_name, end_tag_name);
+                            return Err(HtmlParseError::MismatchedClosingTag);
+                        }
+                        println!("End tag matched: {}", end_tag_name);
+
                         println!("{}", "END_TAG:");
 
                     }
@@ -123,6 +136,7 @@ pub fn parse_elem(pair: &Pair<Rule>) -> Result<HtmlElem, HtmlParseError> {
                 children: vec![],
             })
         }
+        
 
         _ => {
             println!("{}", pair);
