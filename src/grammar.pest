@@ -1,12 +1,15 @@
 WHITESPACE = _{ " " | "\t" | "\n"}
 
-html = {SOI ~ WHITESPACE* ~ declaration? ~ elem* ~ WHITESPACE* ~ EOI}
-declaration = {"<!DOCTYPE html>" ~ WHITESPACE*}
+html = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE* ~ (elem | self_closed_tag)* ~ WHITESPACE* ~ EOI}
+declaration = {"<!DOCTYPE html>"}
 
-elem = {start_tag ~ WHITESPACE* ~ elem*? ~WHITESPACE* ~ end_tag}
-start_tag = { "<" ~ tag_name ~ ">" }
-end_tag = { "</" ~ tag_name ~ ">" }
-tag_name = { ASCII_ALPHANUMERIC+ }
-// text = { }
-// COMMENT = ${ SingleLineComment }
-// SingleLineComment = { "//" ~ (!"\n" ~ ANY)* }
+elem = {start_tag ~ WHITESPACE* ~ (elem | text | self_closed_tag)*  ~ WHITESPACE* ~ end_tag}
+start_tag = { "<" ~ tag_name ~ (WHITESPACE+ ~ attribute)* ~ ">" }
+end_tag   = { "</" ~ tag_name ~ ">" }
+self_closed_tag = { "<" ~ tag_name ~ (WHITESPACE+ ~ attribute)* ~ "/>"}
+tag_name = @{ ASCII_ALPHA+ } //@
+attribute = { (ASCII_ALPHA)+ ~ "=\"" ~ ANY ~ "\"" }
+
+
+text = {(!"<" ~ ANY)+} // @
+

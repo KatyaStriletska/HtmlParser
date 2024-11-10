@@ -1,20 +1,31 @@
-use pest_derive:: Parser;
-use pest:: Parser;
+use pest::Parser;
+use pest_derive::Parser;
+use html_parser::parse_html;
+
 #[derive(Parser)]
 #[grammar = "./grammar.pest"]
 pub struct Grammar;
 
-fn main() {
-    let example = "<!DOCTYPE html>
-                        <html> 
+fn main()  -> Result<(), Box<dyn std::error::Error>>{
+    let input = "<!DOCTYPE html>
+                    <html>
+                            <head> 
+                                <br/> 
+                                <label>Some text!</label>
+                                <div>
+                                 text
+                                </div>
+                            </head>
                             <body>
-                            </body>                    
-                        </html>
-                    ";
-    let pasred_html_dec = Grammar:: parse(Rule::declaration,example);
-    let pasred_html_struct = Grammar:: parse(Rule::html,example);
-
-    println!("{:?}", pasred_html_dec);
-    println!("{:?}", pasred_html_struct);
-
-}  
+                            <br/>
+                            <p> jnfdfjndf</p>
+                            </body>  
+                    </html>           
+                        ";
+    match parse_html(input) {
+            Ok(_) => println!("Parsing successful!"),
+            Err(e) => println!("Parsing failed: {}", e),
+                        }
+    
+    Ok(())
+}
