@@ -6,3 +6,6 @@ clippy:
 
 run: 
 	cargo run
+
+test:
+	cargo test 

@@ -8,7 +8,6 @@ pub struct Grammar;
 
 fn main() -> Result<(),  Box<dyn std::error::Error>> {
     let input = "<!DOCTYPE html>
-    fhvdfkdk
                     <html>
                             <head> 
                                 <br/> 

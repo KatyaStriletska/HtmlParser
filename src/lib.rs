@@ -13,10 +13,6 @@ pub enum HtmlParseError{
     ErrorHtmlStructure, 
     #[error("The tag is closed with a different tag than expected. Expected: {0}, found: {1}")]
     MismatchedClosingTag(String, String),
-    #[error("Unexpected html element detected!: {0}")]
-    UnexpectedHtmlElement(String), 
-    #[error("unknown data store error")]
-    Unknown,
 }
 #[derive(Debug)]
 
@@ -120,6 +116,6 @@ pub fn parse_elem(pair: &Pair<Rule>) -> Result<HtmlElem, HtmlParseError> {
         
 
         _ => {
-            Err(HtmlParseError::Unknown)},
+            Err(HtmlParseError::ErrorHtmlStructure)},
     }
 }
