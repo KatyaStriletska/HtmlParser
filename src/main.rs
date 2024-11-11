@@ -1,41 +1,51 @@
-use html_parser::{parse_html, HtmlElem, HtmlParseError};
-use pest::Parser;
-use pest_derive::Parser;
+use clap::{Parser, Subcommand}; // Використовуємо тільки clap для CLI
+use html_parser::{parse_html, HtmlElem};
+use std::fs::read_to_string;
 
 #[derive(Parser)]
-#[grammar = "./grammar.pest"]
-pub struct Grammar;
+#[command(
+    name = "HTML Parser CLI Tool",
+    about = "A tool to parse HTML files and display their DOM structure.",
+    long_about = None,
+    after_help = "Example:\n cargo run -- parse path/to/your_file.html\n\nAuthor:\n  Striletska Kateryna"
+)]
+struct Args {
+    #[command(subcommand)]
+    command: Commands,
+}
 
-fn main() -> Result<(),  Box<dyn std::error::Error>> {
-    let input = "<!DOCTYPE html>
-                    <html>
-                            <head> 
-                                <br/> 
-                                <label>Some text!</label>
-                                <div>
-                                 text
-                                </div>
-                            </head>
-                            <body>
-                            <br/>
-                            <p> jnfdfjndf</p>
-                            </body>  
-                    </html>           
-                        ";
-    let parsed_html = parse_html(input)?;
-    for child in &parsed_html {
-            print_tree(child, "");
+#[derive(Subcommand)]
+enum Commands {
+    Parse { path: String },
+    Credits,
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args = Args::parse();
+
+    match args.command {
+        Commands::Parse { path } => parse(&path),
+        Commands::Credits => print_credits(),
+    }
+}
+
+fn parse(path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    println!("{}", path);
+    let html = read_to_string(path)?;
+    println!("{}", html);
+
+    let parsed_html = parse_html(html.as_str())?;
+    for item in parsed_html {
+        print_tree(&item, "");
     }
     Ok(())
-    // match parse_html(input) {
-    //     Ok(elements) => {
-    //         for child in &elements {
-    //             print_tree(child, "");
-    //         }
-    //     }
-    
-    //     Err(e) => println!("Parsing failed: {}", e),
-    // }
+}
+
+fn print_credits() -> Result<(), Box<dyn std::error::Error>> {
+    println!("HTML PARSER PROJECT");
+    println!("Author : Striletska Kateryna");
+    println!("Version: 1.0.0");
+    Ok(())
 }
 
 fn print_tree(root: &HtmlElem, indent: &str) {

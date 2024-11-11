@@ -1,15 +1,69 @@
-WHITESPACE = _{ " " | "\t" | "\n"}
+// This rule is ignored when outputting the result, but it is needed to determine the spaces of tabs and newlines.
+WHITESPACE = _{ " " | "\t" | "\n" | "\r"}
 
-html = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE* ~ (elem | self_closed_tag)* ~ WHITESPACE* ~ EOI}
+/// This rule is used to parse all input text. 
+///
+/// #Examples
+///```
+/// // <!DOCTYPE html><html><br/><html/>
+/// ```
+document = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE* ~ (elem | self_closed_tag)* ~ WHITESPACE* ~ EOI}
+
+/// This rule is used to define the declaration at the start of the text. 
+///
+/// #Examples
+///```
+/// // <!DOCTYPE html>
+/// ```
 declaration = {"<!DOCTYPE html>"}
 
+/// This rule is used to identify the structure of a complex tag, which necessarily includes an opening and closing tag. And may contain nested elements.
+/// #Examples
+///```
+/// // <html> </html>
+/// // <html> <br/> <p>Text</p> </html>
+/// ```
 elem = {start_tag ~ WHITESPACE* ~ (elem | text | self_closed_tag)*  ~ WHITESPACE* ~ end_tag}
-start_tag = { "<" ~ tag_name ~ (WHITESPACE+ ~ attribute)* ~ ">" }
+
+/// This rule is used to identify the opening tag.
+/// #Examples
+///```
+/// // <html>
+/// // <p>
+/// ```
+start_tag = { "<" ~ tag_name ~ ">" }
+//(WHITESPACE+ ~ attribute)* 
+
+
+/// This rule is used to identify the ending tag.
+/// #Examples
+///```
+/// // </html>
+/// // </p>
+/// ```
 end_tag   = { "</" ~ tag_name ~ ">" }
-self_closed_tag = { "<" ~ tag_name ~ (WHITESPACE+ ~ attribute)* ~ "/>"}
-tag_name = @{ ASCII_ALPHA+ } //@
-attribute = { (ASCII_ALPHA)+ ~ "=\"" ~ ANY ~ "\"" }
 
+/// This rule is used to identify the self-closing tag.
+/// #Examples
+///```
+/// // <br/>
+/// // <img/>
+/// ```
+self_closed_tag = { "<" ~ tag_name  ~ "/>"}
 
-text = {(!"<" ~ ANY)+} // @
+/// This rule is used to identify the tag name.
+/// #Examples
+///```
+/// // html
+/// // div
+/// // br
+/// ```
+tag_name = @{ ASCII_ALPHA+ } 
+
+/// This rule is used to identify the text component.
+/// #Examples
+///```
+/// // 'Just some text between the two components or tags.'
+/// ```
+text = {(!"<" ~ ANY)+} 
 
