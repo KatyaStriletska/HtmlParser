@@ -54,7 +54,7 @@ For a better understanding of the output tree, for example, this html code:
 ```
  will have the following output tree:
 
-`data\tree-diagram.png`
+![tree-diagram](https://github.com/user-attachments/assets/100c2649-8e9a-4065-a5ff-cdeda7570b83)
 
 # Grammar Rules
 
