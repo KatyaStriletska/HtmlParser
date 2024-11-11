@@ -1,17 +1,17 @@
+use html_parser::{parse_html, HtmlElem};
 use pest::Parser;
 use pest_derive::Parser;
-use html_parser::{parse_html, HtmlElem};
 
 #[derive(Parser)]
 #[grammar = "./grammar.pest"]
 pub struct Grammar;
 
-fn main()  -> Result<(), Box<dyn std::error::Error>>{
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let input = "<!DOCTYPE html>
                     <html>
                             <head> 
                                 <br/> 
-                                <lab>Some text!</label>
+                                <label>Some text!</label>
                                 <div>
                                  text
                                 </div>
@@ -23,23 +23,32 @@ fn main()  -> Result<(), Box<dyn std::error::Error>>{
                     </html>           
                         ";
     match parse_html(input) {
-            Ok(elements) => print_html_dom(&elements),
-            Err(e) => println!("Parsing failed: {}", e),
-                        }
-    
+        Ok(elements) => {
+            for child in &elements {
+                print_tree(child, "");
+            }
+        }
+        Err(e) => println!("Parsing failed: {}", e),
+    }
     Ok(())
 }
-fn print_html_dom(elements: &Vec<HtmlElem>){
-    // if elements[0] == HtmlElem::Documentation(()) &&{
 
-    // }
-    println!("{:?}", elements[0]);
-    println!("{:?}", elements[1]);
-    
-    // for elem in elements[1] {
-    //     println!("{}", elem);
-    // }
-}
-fn print_tree(html: &HtmlElem){
-   
+fn print_tree(root: &HtmlElem, indent: &str) {
+    match root {
+        HtmlElem::Tag { tag_name, children } => {
+            println!("{} {}", indent, tag_name);
+            if !children.is_empty() {
+                let new_indent = format!("{}  ", indent);
+                for child in children {
+                    print_tree(child, &new_indent);
+                }
+            }
+        }
+        HtmlElem::Text(text) => {
+            println!("{} ({})", indent, text);
+        }
+        HtmlElem::Documentation(doctype) => {
+            println!("{}", doctype);
+        }
+    }
 }
