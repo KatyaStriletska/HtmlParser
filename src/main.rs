@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand}; // Використовуємо тільки clap для CLI
-use html_parser::{parse_html, HtmlElem};
+use html_simple_parser::{parse_html, HtmlElem};
 use std::fs::read_to_string;
 
 #[derive(Parser)]

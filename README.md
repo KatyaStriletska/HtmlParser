@@ -1,4 +1,4 @@
-# Html Parser
+# Html simple parser
 This is an implementation of a basic html parser written in Rust using Pest. This tool reads an HTML file, validates its structure, and provides a nested, hierarchical representation of the HTML elements within it.
 
 # Overview 

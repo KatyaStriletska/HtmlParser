@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Result};
-use html_parser::{parse_html, HtmlElem, HtmlParseError};
+use html_simple_parser::{parse_html, HtmlElem, HtmlParseError};
 
 #[test]
 fn thow_mismatched_closing_tag_error() -> Result<()> {

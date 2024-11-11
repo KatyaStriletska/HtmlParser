@@ -1,5 +1,5 @@
 [package]
-name = "html_parser"
+name = "html_simple_parser"
 version = "0.1.0"
 edition = "2021"
 description = "A simple parser for html files to extract tags, child tags, attributes, etc."
