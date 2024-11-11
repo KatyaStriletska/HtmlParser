@@ -5,6 +5,7 @@ edition = "2021"
 description = "A simple parser for html files to extract tags, child tags, attributes, etc."
 readme = "README.md"
 repository = "https://github.com/KatyaStriletska/HtmlParser"
+license = "MIT"
 
 [dependencies]
 anyhow = "1.0.93"
