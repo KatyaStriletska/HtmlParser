@@ -1,4 +1,4 @@
-use html_parser::{parse_html, HtmlElem};
+use html_parser::{parse_html, HtmlElem, HtmlParseError};
 use pest::Parser;
 use pest_derive::Parser;
 
@@ -6,8 +6,9 @@ use pest_derive::Parser;
 #[grammar = "./grammar.pest"]
 pub struct Grammar;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(),  Box<dyn std::error::Error>> {
     let input = "<!DOCTYPE html>
+    fhvdfkdk
                     <html>
                             <head> 
                                 <br/> 
@@ -22,15 +23,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             </body>  
                     </html>           
                         ";
-    match parse_html(input) {
-        Ok(elements) => {
-            for child in &elements {
-                print_tree(child, "");
-            }
-        }
-        Err(e) => println!("Parsing failed: {}", e),
+    let parsed_html = parse_html(input)?;
+    for child in &parsed_html {
+            print_tree(child, "");
     }
     Ok(())
+    // match parse_html(input) {
+    //     Ok(elements) => {
+    //         for child in &elements {
+    //             print_tree(child, "");
+    //         }
+    //     }
+    
+    //     Err(e) => println!("Parsing failed: {}", e),
+    // }
 }
 
 fn print_tree(root: &HtmlElem, indent: &str) {
