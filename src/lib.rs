@@ -38,7 +38,6 @@ pub fn parse_html(input: &str) -> Result<Vec<HtmlElem>, HtmlParseError> {
                     match tag.as_rule() {
                         Rule::elem | Rule::self_closed_tag => {
                             let elem = parse_elem(&tag)?;
-                            println!("{:?}", elem);
                             html_dom.push(elem);
                         }
                         Rule::declaration => {

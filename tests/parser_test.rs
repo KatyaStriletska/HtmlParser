@@ -80,18 +80,22 @@ fn defining_right_tags() -> Result<()> {
                                         ));
                                     }
                                 }
-                                _ => return Err(anyhow!(
+                                _ => {
+                                    return Err(anyhow!(
                                     "Test failed! The first child of <head> should be a <p> tag."
-                                )),
+                                ))
+                                }
                             }
                             match &children[1] {
                                 HtmlElem::Tag { tag_name, children } => {
                                     assert_eq!(tag_name, "<br/>");
                                     assert!(children.is_empty());
                                 }
-                                _ => return Err(anyhow!(
+                                _ => {
+                                    return Err(anyhow!(
                                     "Test failed! The second child of <head> should be a <br> tag."
-                                )),
+                                ))
+                                }
                             }
                         }
                         _ => {

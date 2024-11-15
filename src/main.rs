@@ -30,9 +30,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn parse(path: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("{}", path);
+    // println!("{}", path);
     let html = read_to_string(path)?;
-    println!("{}", html);
+    // println!("{}", html);
 
     let parsed_html = parse_html(html.as_str())?;
     for item in parsed_html {

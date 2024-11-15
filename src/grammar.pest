@@ -1,5 +1,8 @@
 // This rule is ignored when outputting the result, but it is needed to determine the spaces of tabs and newlines.
-WHITESPACE = _{ " " | "\t" | "\n" | "\r"}
+WHITESPACE = _{ " "}
+NEWLINE = _{"\n" | "\r\n"}
+TAB = _{"\t"}
+WHITESPACE_ALL = _{ WHITESPACE | TAB | NEWLINE }
 
 /// This rule is used to parse all input text. 
 ///
@@ -7,7 +10,7 @@ WHITESPACE = _{ " " | "\t" | "\n" | "\r"}
 ///```
 /// // <!DOCTYPE html><html><br/><html/>
 /// ```
-document = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE* ~ (elem | self_closed_tag)* ~ WHITESPACE* ~ EOI}
+document = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE_ALL* ~ (TAB* ~ elem | self_closed_tag)* ~ EOI}
 
 /// This rule is used to define the declaration at the start of the text. 
 ///
@@ -23,7 +26,9 @@ declaration = {"<!DOCTYPE html>"}
 /// // <html> </html>
 /// // <html> <br/> <p>Text</p> </html>
 /// ```
-elem = {start_tag ~ WHITESPACE* ~ (elem | text | self_closed_tag)*  ~ WHITESPACE* ~ end_tag}
+elem = {    start_tag ~ NEWLINE* ~ (TAB* ~ (elem | text | self_closed_tag) ~ NEWLINE*)* ~ end_tag 
+}
+
 
 /// This rule is used to identify the opening tag.
 /// #Examples
@@ -49,7 +54,7 @@ end_tag   = { "</" ~ tag_name ~ ">" }
 /// // <br/>
 /// // <img/>
 /// ```
-self_closed_tag = { "<" ~ tag_name  ~ "/>"}
+self_closed_tag = { TAB* ~ "<" ~ tag_name ~ "/>"  }
 
 /// This rule is used to identify the tag name.
 /// #Examples
@@ -66,4 +71,3 @@ tag_name = @{ ASCII_ALPHA+ }
 /// // 'Just some text between the two components or tags.'
 /// ```
 text = {(!"<" ~ ANY)+} 
-
