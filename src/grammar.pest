@@ -10,7 +10,7 @@ WHITESPACE_ALL = _{ WHITESPACE | TAB | NEWLINE }
 ///```
 /// // <!DOCTYPE html><html><br/><html/>
 /// ```
-document = {SOI ~ WHITESPACE* ~ declaration? ~ WHITESPACE_ALL* ~ (TAB* ~ elem | self_closed_tag)* ~ EOI}
+document = {SOI ~ WHITESPACE_ALL* ~ declaration? ~ WHITESPACE_ALL* ~ (TAB* ~ elem | self_closed_tag)* ~ EOI}
 
 /// This rule is used to define the declaration at the start of the text. 
 ///
@@ -26,8 +26,7 @@ declaration = {"<!DOCTYPE html>"}
 /// // <html> </html>
 /// // <html> <br/> <p>Text</p> </html>
 /// ```
-elem = {    start_tag ~ NEWLINE* ~ (TAB* ~ (elem | text | self_closed_tag) ~ NEWLINE*)* ~ end_tag 
-}
+elem = {start_tag ~ NEWLINE*  ~ (TAB* ~ (elem | text | self_closed_tag) ~ NEWLINE*)* ~ end_tag }
 
 
 /// This rule is used to identify the opening tag.
