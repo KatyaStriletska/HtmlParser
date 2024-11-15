@@ -4,7 +4,7 @@ This is an implementation of a basic html parser written in Rust using Pest. Thi
 # Links
 https://crates.io/crates/html_simple_parser
 
-[https://docs.rs/html_simple_parser/0.1.0/html_simple_parser/](https://docs.rs/html_simple_parser/0.1.1/html_simple_parser/)
+https://docs.rs/html_simple_parser/0.1.1/html_simple_parser/
 
 # Overview 
 This html parser is designed to determine the correctness of the html structure and information about the HTML elements, their nesting, and the relationships between them. It is particularly useful for getting Html Dom in a convenient format for the user with a hierarchy of tags.
